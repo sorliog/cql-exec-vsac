@@ -210,7 +210,7 @@ class CodeService {
     } else if (results.length === 1) {
       return results[0];
     } else {
-      return results.reduce(function (a, b) {
+      return results.reduce(function(a, b) {
         if (a.version > b.version) {
           return a;
         } else {
@@ -233,8 +233,20 @@ function extractSetOfValueSetsFromLibrary(
   extractFromIncluded = true,
   valueSets = new Set()
 ) {
-  // First add all the value sets from this library into the set
-  Object.values(library.valuesets).forEach(vs => valueSets.add(vs));
+  // Some JSON-ELM use the "valueSets" property, while others use the "valuesets" property
+  // First, check if library has "valueSets" property or  "valuesets" property
+  if (library.valueSets == null && library.valuesets == null) {
+    return valueSets;
+  }
+
+  // Extract the arrays of the "valueSets" property and "valuesets" property
+  let valueSetsInLibrary = library.valueSets ? Object.values(library.valueSets)[0] : [];
+  let valuesetsInLibrary = library.valuesets ? Object.values(library.valuesets)[0] : [];
+
+  // Add all the value sets from this library into the set
+  valueSetsInLibrary.forEach(vs => valueSets.add(vs));
+  valuesetsInLibrary.forEach(vs => valueSets.add(vs));
+
   // Then, if requested, loop through the included libraries and add value sets from each of them
   if (extractFromIncluded && library.includes) {
     Object.values(library.includes).forEach(included =>
