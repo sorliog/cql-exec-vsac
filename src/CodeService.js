@@ -210,7 +210,7 @@ class CodeService {
     } else if (results.length === 1) {
       return results[0];
     } else {
-      return results.reduce(function(a, b) {
+      return results.reduce(function (a, b) {
         if (a.version > b.version) {
           return a;
         } else {
